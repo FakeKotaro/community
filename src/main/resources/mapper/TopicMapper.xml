@@ -7,7 +7,86 @@
         insert into topic
         (title, description, gmt_create, gmt_modify, creator,tag)
         values
-        (#{title},#{description},#{gmtCreate},#{gmtModify},#{creator},#{tag});
+        (#{title},#{description},#{gmtCreate},#{gmtModify},#{creator.id},#{tag});
     </insert>
+
+    <resultMap id="topicMap" type="topic">
+        <id property="id" column="tid"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="tag" column="tag"/>
+        <result property="gmtCreate" column="gmt_tcreate"/>
+        <result property="gmtModify" column="gmt_tmodify"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <association property="creator" javaType="user">
+            <id property="id" column="uid"/>
+            <result property="accountId" column="account_id"/>
+            <result property="name" column="name"/>
+            <result property="token" column="token"/>
+            <result property="gmtCreate" column="GMT_ucreate"/>
+            <result property="gmtModify" column="GMT_umodify"/>
+            <result property="avatarUrl" column="avatar_url"/>
+        </association>
+    </resultMap>
+
+    <select id="getAllTopicsByPage" resultMap="topicMap">
+        select
+        t.id as tid,
+        title,description,
+        t.gmt_create as gmt_tcreate,t.gmt_modify as gmt_tmodify,
+        creator,comment_count,view_count,like_count,tag,
+        u.id as uid,
+        account_id,name,token,
+        u.GMT_create as GMT_ucreate,u.GMT_modify as GMT_umodify,
+        avatar_url
+        from topic t , user u
+        where t.creator = u.id
+        limit #{page},5
+    </select>
+
+    <select id="getAllTopics" resultMap="topicMap">
+        select
+               t.id as tid,
+               title,description,
+               t.gmt_create as gmt_tcreate,t.gmt_modify as gmt_tmodify,
+               creator,comment_count,view_count,like_count,tag,
+               u.id as uid,
+               account_id,name,token,
+               u.GMT_create as GMT_ucreate,u.GMT_modify as GMT_umodify,
+               avatar_url
+        from topic t , user u
+        where t.creator = u.id
+    </select>
+
+    <select id="getTopicsByUserAndPage" resultMap="topicMap">
+        select
+               t.id as tid,
+               title,description,
+               t.gmt_create as gmt_tcreate,t.gmt_modify as gmt_tmodify,
+               creator,comment_count,view_count,like_count,tag,
+               u.id as uid,
+               account_id,name,token,
+               u.GMT_create as GMT_ucreate,u.GMT_modify as GMT_umodify,
+               avatar_url
+        from topic t , user u
+        where t.creator = u.id and #{user} = t.creator
+        limit #{page},5
+    </select>
+
+    <select id="getTopicsByUser" resultMap="topicMap">
+        select
+               t.id as tid,
+               title,description,
+               t.gmt_create as gmt_tcreate,t.gmt_modify as gmt_tmodify,
+               creator,comment_count,view_count,like_count,tag,
+               u.id as uid,
+               account_id,name,token,
+               u.GMT_create as GMT_ucreate,u.GMT_modify as GMT_umodify,
+               avatar_url
+        from topic t , user u
+        where t.creator = u.id and #{user} = t.creator
+    </select>
 
 </mapper>

@@ -44,11 +44,14 @@ public class PublishController {
             model.addAttribute("error" , "标签不能为空！");
         }
         User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            return "redirect:/";
+        }
         Topic topic = new Topic();
         topic.setTitle(title);
         topic.setDescription(desc);
         topic.setTag(tag);
-        topic.setCreator(user.getId());
+        topic.setCreator(user);
         topic.setGmtCreate(System.currentTimeMillis());
         topic.setGmtModify(topic.getGmtCreate());
         topicService.publish(topic);

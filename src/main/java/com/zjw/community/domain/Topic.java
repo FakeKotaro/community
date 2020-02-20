@@ -10,7 +10,10 @@ public class Topic {
     private String description;
     private Long gmtCreate;
     private Long gmtModify;
-    private int creator;
     private String tag;
+    private int commentCount;
+    private int viewCount;
+    private int likeCount;
 
+    private User creator;
 }
